@@ -20,30 +20,38 @@ template <typename T> struct LE {
     void del(T);
     bool find(T, Nodo<T>*&);
     void print();
-    Nodo<T>* nodo();
 };
 
 template<typename T>
-void merge(Nodo<T>* l1, Nodo<T>* l2) {
+void merge(Nodo<T>* h1, Nodo<T>* h2) {
 
-    Nodo<T>* tmp = l1;
+    Nodo<T>* p, * q, * ap, * aq;
+    ap = NULL;
+    p = h1;
+    q = h2;
+    aq = q;
 
-    for (Nodo<T>* i = l1; i; tmp = i, i = i->next) {
-        for (Nodo<T>* j = l2; j && j->valor < i->valor; j = j->next) {
-            if (!(tmp == l1)) {
-                tmp->next = j;
-                l2 = l2->next;
-                j->next = i;
+
+    for (; p; ap = p, p = p->next)
+    {
+        if (!(p->valor < q->valor))
+        {
+            if (ap) {
+                q = q->next;
+                ap->next = aq;
+                aq->next = p;
+                aq = q;
             }
             else {
-                l1 = l2;
-                l2 = l2->next;
-                j->next = i;
-                i->next = l2;
+                q = q->next;
+                aq->next = p;
+                h1 = aq;
+                aq = q;
             }
         }
     }
 
+    h2 = NULL;
 }
 
 
@@ -59,7 +67,7 @@ int main() {
     b.add(0);
     b.add(4);
 
-    merge(a.nodo(), b.nodo());
+    merge(a.inicio, b.inicio);
 
     a.print();
 
@@ -130,9 +138,4 @@ void LE<T>::print()
     for (Nodo<T>* p = inicio; p; p = p->next) {
         cout << p->valor << " ";
     }
-}
-
-template <typename T>
-Nodo<T>* LE<T>::nodo() {
-    return inicio;
 }
