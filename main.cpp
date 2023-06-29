@@ -30,6 +30,14 @@ struct Iterator {
         return it;
     }
 
+    void operator +=(T v) {
+        it->valor = it->valor + v;
+    }
+
+    void operator -=(T v) {
+        it->valor = it->valor - v;
+    }
+
     T operator*()
     {
         return it->valor;
@@ -105,10 +113,18 @@ int main() {
     a.add(7);
 
     cout << "Inicio" << " -> ";
-    for (It = a.inicio; It.it;It++) {
+    for (It = a.inicio; It.it; It++) {
+        It -= 10;
         cout << *It << " -> ";
     }
-    cout << "NULL";
+    cout << "NULL\n";
+
+    cout << "Inicio" << " -> ";
+    for (It = a.inicio; It.it;It++) {
+        It += 10;
+        cout << *It << " -> ";
+    }
+    cout << "NULL\n";
 
     return 0;
 }
