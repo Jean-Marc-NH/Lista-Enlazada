@@ -11,9 +11,47 @@ template <typename T> struct Nodo {
     }
 };
 
-template <typename T> struct LE {
+
+template <typename T>
+struct Iterator {
+    Nodo<T>* it;
+    void operator =(Nodo<T>* valor)
+    {
+        it = valor;
+    }
+    void operator =(T valor)
+    {
+        it->valor = valor;
+    }
+
+    Nodo<T>* operator++(int)
+    {
+        it = it->next;
+        return it;
+    }
+
+    T operator*()
+    {
+        return it->valor;
+    }
+
+    bool operator<=(Nodo<T>* otro)
+    {
+        return it->valor <= otro->valor;
+    }
+
+    friend istream& operator>>(istream& input, Iterator D)
+    {
+        input >> (*D.it->valor);
+        return input;
+    }
+
+};
+
+template <typename T, typename I> struct LE {
     Nodo<T>* inicio;
     Nodo<T>* po;
+    typedef I it_vector;
 
     LE();
     void add(T);
@@ -54,35 +92,36 @@ void merge(Nodo<T>* h1, Nodo<T>* h2) {
     h2 = NULL;
 }
 
-
 int main() {
 
-    LE<int> a;
-    LE<int> b;
+    LE<int,Iterator<int>> a;
+    LE<int,Iterator<int>>::it_vector It;
 
     a.add(1);
     a.add(3);
+    a.add(78);
+    a.add(31);
+    a.add(-23);
     a.add(7);
 
-    b.add(0);
-    b.add(4);
-
-    merge(a.inicio, b.inicio);
-
-    a.print();
+    cout << "Inicio" << " -> ";
+    for (It = a.inicio; It.it;It++) {
+        cout << *It << " -> ";
+    }
+    cout << "NULL";
 
     return 0;
 }
 
-template <typename T>
-LE<T>::LE()
+template <typename T, typename I>
+LE<T, I>::LE()
 {
     po = nullptr;
     inicio = nullptr;
 }
 
-template <typename T>
-void LE<T>::add(T v)
+template <typename T, typename I>
+void LE<T, I>::add(T v)
 {
 
     if (!find(v, po)) {
@@ -95,8 +134,8 @@ void LE<T>::add(T v)
     }
 }
 
-template <typename T>
-void LE<T>::del(T v)
+template <typename T, typename I>
+void LE<T, I>::del(T v)
 {
     Nodo<T>* tmp;
     if (find(v, po)) {
@@ -114,8 +153,8 @@ void LE<T>::del(T v)
     }
 }
 
-template <typename T>
-bool LE<T>::find(T v, Nodo<T>*& pos)
+template <typename T, typename I>
+bool LE<T, I>::find(T v, Nodo<T>*& pos)
 {
 
     pos = nullptr;
@@ -131,8 +170,8 @@ bool LE<T>::find(T v, Nodo<T>*& pos)
     return res;
 }
 
-template <typename T>
-void LE<T>::print()
+template <typename T, typename I>
+void LE<T, I>::print()
 {
 
     for (Nodo<T>* p = inicio; p; p = p->next) {
